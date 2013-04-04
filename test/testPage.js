@@ -43,9 +43,9 @@ $(document).ready(function() {
 					queryParam : "text",
 					type : "url",
 					listFormatter : function(item, term) {
-						var compiled = _.template("<img src=\"../<%= thumb %>\"><% print(highlight(name.first)) %> <% print(highlight(name.last)) %><% if (name.suffix) { print(', ' + name.suffix)} %><br /><small><% print(highlight(organization.name)) %></small>");
+						var compiled = _.template("<% if (thumb) { print('<img src=\"../' + thumb + '\">') } %><% print(hl(name.first)) %> <% print(hl(name.last)) %><% if (name.suffix) { print(', ' + name.suffix)} %><br /><small><% print(hl(organization.name)) %></small>");
 						return compiled({
-							highlight : $.proxy($.fn.usersuggest.highlighter, this, term),
+							hl : $.proxy($.fn.usersuggest.highlighter, this, term),
 							organization : item.profile.organization,
 							name : item.profile.name,
 							thumb : item.profile.thumbnail
@@ -65,7 +65,7 @@ $(document).ready(function() {
 					maxEntries : 5
 
 				}],
-				link : "<a tabFocus = \"0\" href=\"\">Invite someone new</a>",
+				link : "<a tabFocus = \"0\" href=\"#\">Invite someone new</a>",
 				linkHandler : function() {
 					alert("Invite someone!");
 				},

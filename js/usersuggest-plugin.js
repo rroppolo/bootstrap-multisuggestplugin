@@ -44,12 +44,12 @@
 			self.$menu.addClass("usuggest-menu");
 			
 			//focus/click listener to always select text when input has a value
-			self.$element.on("focus click", function(evt) {
+			self.$element.on("focus click mousedown", function(evt) {
 				if (self.$element.hasClass("usuggest-selected")) {
-					//select the existing item on click/key focus
-					self.$element.select();	
 					evt.stopPropagation();
-      				evt.preventDefault();				
+      				evt.preventDefault();	
+					//select the existing item on click/key focus
+					self.$element.select();				
 				}
 			});
 			
