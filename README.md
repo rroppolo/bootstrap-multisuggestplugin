@@ -1,7 +1,7 @@
 userSuggestPlugin
 =================
 
-User suggestion autocomplete / dropdown widget
+User suggestion autocomplete / dropdown widget that extends the Bootstrap typeahead plugin functionality.
 
 To use the user suggest plugin, please specify the following options:
 
