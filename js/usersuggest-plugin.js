@@ -61,6 +61,11 @@
 				
 				self.$element.addClass("usuggest-input-dropdown");
 			}
+			
+    		//provide default values for options that were not specified			
+			$.each(self.sources, function(ind, dataSource) {
+				self.sources[ind] = $.extend( [], $.fn.usersuggest.defaults.dataSource, dataSource);
+			});
 
 		},
 		/* Selection listener to assign selected value to hidden input */
@@ -88,7 +93,7 @@
 	    	if (self.options.delay) {
 	    		
 	    		clearTimeout(self.timeout);
-				self.searching = setTimeout(function() {
+				self.timeout = setTimeout(function() {
 					// only search if the value has changed
 					if ( self.query !== self.$element.val() ) {
 						self.search();
@@ -116,7 +121,7 @@
 			$.each(self.sources, function(ind, dataSource) {
 				
 				_.bindAll(dataSource);
-				
+								
 				//Backbone Collection type
 				if ("backbone.collection" === dataSource.type) {
 					dataSource.results = dataSource.filter(dataSource.data.models, self.query);
@@ -161,7 +166,7 @@
 				} 
 				 //Array type
 				else if ("array" === dataSource.type) {
-					dataSource.results = $.fn.usersuggest.filter(dataSource.data, self.query);
+					dataSource.results = dataSource.filter(dataSource.data, self.query);
 				}
 
 			});
@@ -450,6 +455,8 @@
 			}
 		}
 	});
+	
+	
 
 	/*
 	 * UserSuggest Plugin Definition
@@ -467,17 +474,7 @@
 		})
 	}
 
-	$.fn.usersuggest.defaults = {
-		source : [],
-		menu : '<ul class="typeahead dropdown-menu"></ul>',
-		item : '<li><a href="#"></a></li>',
-		minLength : 1
-	}
-
-	$.fn.typeahead.Constructor = UserSuggest
-	
-	
-	/*
+    /*
 	 * Static utilities
 	 */
 	
@@ -505,5 +502,30 @@
      				  });
    		 	}
 	});
+
+
+	$.fn.usersuggest.defaults = {
+		sources : [],
+		menu : '<ul class="typeahead dropdown-menu"></ul>',
+		item : '<li><a href="#"></a></li>',
+		loadingIconClass : '',
+		noResultsText : 'No search results found.',
+		minLength : 1
+	}
+	
+	$.fn.usersuggest.defaults.dataSource = {
+		data : [],
+		filter : $.fn.usersuggest.filter,
+		listFormatter : function(item, query) { return item },
+		inputFormatter : function(item) { return item },
+		valueAttribute : function(item) { return item },
+		header : "",
+		queryParam : "term",
+		resultsProcessor : function(data) { return data }
+	}
+
+	$.fn.typeahead.Constructor = UserSuggest
+	
+	
 
 })(window.jQuery);

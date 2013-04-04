@@ -13,9 +13,8 @@ $(document).ready(function() {
 
 						var matcher = new RegExp($.fn.usersuggest.escapeRegex(term), "i");
 
-						return $.grep(items, function(value) {
-							return (matcher.test(value.get("user.profile.name.last"))  || 
-							        matcher.test(value.get("user.profile.name.first")) || 
+						return _.filter(items, function(value) {
+							return (matcher.test(value.get("user.profile.name.last") + " " + value.get("user.profile.name.first"))  || 
 							        matcher.test(value.get("user.profile.care_role")));
 						});
 					},
@@ -64,7 +63,11 @@ $(document).ready(function() {
 					header : "Other contacts",
 					maxEntries : 5
 
-				}],
+				},{
+				  type : 'array',
+				  data : ["one", "two", "three"]
+				 }
+				],
 				link : "<a tabFocus = \"0\" href=\"#\">Invite someone new</a>",
 				linkHandler : function() {
 					alert("Invite someone!");
