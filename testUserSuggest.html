@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Test User Suggest Plugin</title>
+
+    <link href="lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="css/usersuggest-plugin.css" rel="stylesheet" />
+    <script src="lib/jquery-1.7.2.js" ></script>
+
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+    <script src="lib/underscore-1.4.4.js"></script>
+    <script src="lib/backbone-0.9.9.js"></script>
+    <script src="lib/backbone-nested.js"></script>
+    <script src="test/TestUserCollection.js"></script>
+    <script src="js/usersuggest-plugin.js"></script>
+	<script src="test/testPage.js"></script>
+		
+</head>
+<body>
+	<div class="well">
+    <form>
+    	<fieldset>
+	    <label>Assign User</label>
+	    <div class="input-prepend">
+	    	<span class="add-on">
+	    		<i class="icon-user"></i>
+	    	</span>
+    		<input id="userSuggestTest" name="assignTo" type="text" placeholder="Type something..."/>
+	    </div>
+    	<div>
+		    <button id="submitB" type="submit" class="btn">Submit</button>    		
+    	</div>
+    	<div>
+    		Submitted value is: <span id="submittedval"></span>
+    	</div>
+    </fieldset>
+    </form>
+    </div>
+</body>
+</html>

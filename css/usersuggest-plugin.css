@@ -1,0 +1,41 @@
+
+input.usuggest-input-dropdown {
+	background-image: url("../img/caret.png");
+	background-repeat: no-repeat;
+	background-position: right center;
+	padding-right: 23px;
+}
+.usuggest-loading {
+    height:60px;
+    background-image:url('../img/spinner.gif');
+    background-repeat:no-repeat;
+    background-position: 50% 50%;
+}
+input.usuggest-selected{
+	text-decoration: underline;
+}
+input.usuggest-hiddeninput {
+	visibility: hidden;
+}
+.usuggest-header, 
+.usuggest-link a,
+.usuggest-ellip span {
+	color: #999999;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+.usuggest-link a {
+	text-decoration: underline !important;
+}
+.input-append .disabled.active, 
+.input-prepend .disabled.active,
+.input-append .usuggest-header.active, 
+.input-prepend .usuggest-header.active {
+    background-color: #FFFFFF;
+    border-color: inherit;
+}
+.usuggest-menu img {
+    margin-right:3px;
+    width:25px;
+    height:25px;
+}
