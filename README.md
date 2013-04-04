@@ -1,8 +1,6 @@
 Bootstrap Multi-Suggest Typeahead
 =================================
 
-See demo [here](http://htmlpreview.github.com/?https://github.com/rroppolo/bootstrap-multisuggestplugin/blob/master/demo.html).
-
 Extends the default [Bootstrap Typeahead](http://twitter.github.com/bootstrap/javascript.html#typeahead) component to support:
 
 * __multiple datasources__
@@ -49,7 +47,7 @@ The plugin accepts options as single object argument. Supported options are:
 * __delay__: optional number of milliseconds to delay typeahead searches
 * __minLength__: optional minimum number of characters needed before performing a typeahead search
 
-See the live demo for fully qualified examples.
+See the [live demo](http://htmlpreview.github.com/?https://github.com/rroppolo/bootstrap-multisuggestplugin/blob/master/demo.html) for fully qualified examples.
 
 Contributing
 ------------
