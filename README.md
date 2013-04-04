@@ -1,6 +1,8 @@
 Bootstrap Multi-Suggest Typeahead
 =================================
 
+See demo [here](http://htmlpreview.github.com/?https://github.com/rroppolo/bootstrap-multisuggestplugin/blob/master/demo.html).
+
 Extends the default [Bootstrap Typeahead](http://twitter.github.com/bootstrap/javascript.html#typeahead) component to support:
 
 * __multiple datasources__
