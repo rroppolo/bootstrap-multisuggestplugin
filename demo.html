@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <title>bootstrap-multisuggest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" rel="stylesheet"/>
+    <style>
+        body {
+            padding-top: 40px;
+        }
+        pre {
+            white-space: pre;
+            word-wrap: normal;
+        }
+    </style>
+    <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet" />
+    <link href="css/usersuggest-plugin.css" rel="stylesheet" />
+</head>
+<body>
+
+<div class="page-container">
+    <div class="container">
+        <div class="marketing">
+            <h1>bootstrap-multisuggest</h1>
+
+            <p class="muted">The multiple-datasource typeahead plugin for Twitter Bootstrap.</p>
+        </div>
+        <div class="row">
+            <div class="span10">
+
+                <h3>Static arrays</h3>
+                <div>
+                    <input type="text" name="cheeses" placeholder="Find or select a cheese..." />
+                </div>
+                <pre class="pre-scrollable prettyprint linenums" data-source="#arrays"></pre>
+
+                <h3>Backbone Collections</h3>
+                <div>
+                    <input type="text" name="collectionCheeses" placeholder="Find or select a cheese..." />
+                </div>
+                <pre class="pre-scrollable prettyprint linenums" data-source="#collections"></pre>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+<script src="js/usersuggest-plugin.js"></script>
+
+<script type="text/javascript">
+
+    // pretty printing
+    $(function() {
+
+        $('[data-source]').each(function() {
+            var $this = $(this),
+                    $source = $($this.data('source'));
+
+            var text = [];
+            $source.each(function() {
+                var $s = $(this);
+                if ($s.prop('tagName') == 'SCRIPT') {
+                    text.push($s.html().replace(/(\n)*/, ''));
+                } else {
+                    text.push($s.clone().wrap('<div>').parent().html());
+                }
+            });
+
+            $this.text(text.join('\n\n').replace(/\t/g, '    '));
+        });
+
+        prettyPrint();
+
+    });
+</script>
+
+
+<script id="arrays">
+
+var americanCheese = [ { id: 1, name: 'American', description: 'Pasteurized processed food product' }, { id: 2, name: 'Brick', description: 'Brick-shaped medium-soft cheese, crumbles easily.' }, { id: 3, name: 'Monterey Jack', description: 'Creamy, mild, white.' }, { id: 4, name: 'Colby', description: 'Semi-hard, washed-curd cheese.' }, { id: 5, name: 'Cream Cheese', description: 'Mild, spreadable cheese, popular on bagels.' }, { id: 6, name: 'Maytag Blue', description: 'Semi-hard blue cheese made from homogenized cows milk.' } ],
+    europeanCheese = [ { id: 101, name: 'Gouda', description: 'Iconic Dutch yellow cheese.' }, { id: 102, name: 'Gjetost', description: 'Caramelized brown Scandinavian whey cheese.' }, { id: 103, name: 'Roquefort', description: 'Sheep milk blue cheese from the south of France.' }, { id: 104, name: 'Emmentaler', description: 'Yellow, medium-hard Swiss cheese with characteristic holes.' }, { id: 105, name: 'Gruyere', description: 'Sweet, slightly salty Swiss cheese, aged five months to one year.' }, { id: 106, name: 'Danish Blue', description: 'A strong, blue-veined cows-milk cheese.' } ];
+
+var arrayFilter = function(items, term) {
+    var matcher = new RegExp($.fn.usersuggest.escapeRegex(term), "i");
+    return _.filter(items, function(item) {
+        return (matcher.test(item.name) || matcher.test(item.description));
+    });
+};
+
+var arrayListFormatter = function(item, term) {
+    // A simple Underscore template for formatting each result
+     var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
+     return compiled({
+        hl : $.proxy($.fn.usersuggest.highlighter, this, term),
+        item: item
+     });
+};
+
+var arrayInputFormatter = function(item) { return item.name; }
+var arrayValueAttribute = function(item) { return item.id; }
+
+$('input[name="cheeses"]').usersuggest({
+    sources: [
+        {
+            header: 'American',
+            type: 'array',
+            data: americanCheese,
+            filter: arrayFilter,
+            listFormatter: arrayListFormatter,
+            inputFormatter: arrayInputFormatter,
+            valueAttribute: arrayValueAttribute
+        },
+        {
+            header: 'European',
+            type: 'array',
+            data: europeanCheese,
+            filter: arrayFilter,
+            listFormatter: arrayListFormatter,
+            inputFormatter: arrayInputFormatter,
+            valueAttribute: arrayValueAttribute
+        }
+    ],
+    link: '<a tabFocus="0" href="javascript:void(0);">Add a new cheese...</a>',
+    linkHandler: function() {
+        alert('Display new cheese form.');
+    },
+    loadingIconClass: 'usuggest-loading',
+    noResultsText: 'No matching cheeses.',
+    enableDropdownMode: true,
+    delay: 300,
+    minLength: 2
+});
+
+</script>
+
+<script id="collections">
+
+    var americanCollection = new Backbone.Collection(americanCheese),
+        europeanCollection = new Backbone.Collection(europeanCheese);
+
+    var collectionFilter = function(collection, term) {
+        var matcher = new RegExp($.fn.usersuggest.escapeRegex(term), "i");
+        return collection.filter(function(item) {
+            return (matcher.test(item.get('name')) || matcher.test(item.get('description')));
+        });
+    };
+
+    var collectionListFormatter = function(item, term) {
+        // A simple Underscore template for formatting each result
+        var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
+        return compiled({
+            hl : $.proxy($.fn.usersuggest.highlighter, this, term),
+            item: item.toJSON()
+        });
+    };
+
+    var collectionInputFormatter = function(item) { return item.get('name'); }
+    var collectionValueAttribute = function(item) { return item.get('id'); }
+
+    $('input[name="collectionCheeses"]').usersuggest({
+        sources: [
+            {
+                header: 'American',
+                type: 'backbone.collection',
+                data: americanCollection,
+                filter: collectionFilter,
+                listFormatter: collectionListFormatter,
+                inputFormatter: collectionInputFormatter,
+                valueAttribute: collectionValueAttribute
+            },
+            {
+                header: 'European',
+                type: 'backbone.collection',
+                data: europeanCollection,
+                filter: collectionFilter,
+                listFormatter: collectionListFormatter,
+                inputFormatter: collectionInputFormatter,
+                valueAttribute: collectionValueAttribute
+            }
+        ],
+        link: '<a tabFocus="0" href="javascript:void(0);">Add a new cheese...</a>',
+        linkHandler: function() {
+            alert('Display new cheese form.');
+        },
+        loadingIconClass: 'usuggest-loading',
+        noResultsText: 'No matching cheeses.',
+        enableDropdownMode: true,
+        delay: 300,
+        minLength: 2
+    });
+
+</script>
+
+</body>
+</html>
