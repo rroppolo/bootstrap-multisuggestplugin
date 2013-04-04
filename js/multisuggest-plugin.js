@@ -1,12 +1,14 @@
-(function($) {"use strict";
+(function($) {
+	
+	"use strict";
 
 	var _superconstr = $.fn.typeahead.Constructor, 
 	    _superproto  = $.fn.typeahead.Constructor.prototype;
 
 	/*
-	 * UserSuggest Plugin Constructor
+	 * MultiSuggest Plugin Constructor
 	 */
-	var UserSuggest = function(element, options) {
+	var MultiSuggest = function(element, options) {
 
 		_superconstr.call(this, element, options);
 		this.init.call(this);
@@ -14,11 +16,11 @@
 	}
 
 	/*
-	 * UserSuggest Plugin Prototype
+	 * MultiSuggest Plugin Prototype
 	 */
-	UserSuggest.prototype = $.extend(UserSuggest, _superproto, {
+	MultiSuggest.prototype = $.extend(MultiSuggest, _superproto, {
 
-		constructor : UserSuggest,
+		constructor : MultiSuggest,
 		/* Widget initialization */
 		init : function() {			
 			var self = this;
@@ -34,18 +36,18 @@
 			//replace the 'name' attribute with a temporary assignment, 
 			//create hidden input to store value
 			nameAttr = self.$element.attr("name");
-			self.$element.attr("name", nameAttr + "_usuggest");
+			self.$element.attr("name", nameAttr + "_msuggest");
 			self.$hiddenInput = $("<input>", {name : nameAttr,
-									          "class" : "usuggest-hiddeninput"});
+									          "class" : "msuggest-hiddeninput"});
 			self.$element.after(self.$hiddenInput);
 			
 
 			self.$element.attr("autocomplete", "off");
-			self.$menu.addClass("usuggest-menu");
+			self.$menu.addClass("msuggest-menu");
 			
 			//focus/click listener to always select text when input has a value
 			self.$element.on("focus click mousedown", function(evt) {
-				if (self.$element.hasClass("usuggest-selected")) {
+				if (self.$element.hasClass("msuggest-selected")) {
 					evt.stopPropagation();
       				evt.preventDefault();	
 					//select the existing item on click/key focus
@@ -59,12 +61,12 @@
 					self.open();
 				});
 				
-				self.$element.addClass("usuggest-input-dropdown");
+				self.$element.addClass("msuggest-input-dropdown");
 			}
 			
     		//provide default values for options that were not specified			
 			$.each(self.sources, function(ind, dataSource) {
-				self.sources[ind] = $.extend( [], $.fn.usersuggest.defaults.dataSource, dataSource);
+				self.sources[ind] = $.extend( [], $.fn.multisuggest.defaults.dataSource, dataSource);
 			});
 
 		},
@@ -76,7 +78,7 @@
 	        display = active.attr('data-display');
 	        val = active.attr('data-value');
 	        if (val && val !== "") {
-		        this.$element.addClass("usuggest-selected");
+		        this.$element.addClass("msuggest-selected");
 	      	
 		      	//set the visible input to the display value, mark it 'selected'
 	    	  	this.$element.val(this.updater(display)).change().select();
@@ -271,7 +273,7 @@
 				//render the dataSource (dropdownMode will not render url types for open flow)
 				if (renderSource) {
 					//create the header text
-					li = $("<li>", {"class" : "usuggest-header"});
+					li = $("<li>", {"class" : "msuggest-header"});
 					li.append($("<span>", {"class" : "muted",
 				 						    "html" : dataSource.header}));
 					menu.append(li);
@@ -279,7 +281,7 @@
 					//render the loading icon (if applicable)
 					if (renderPlaceHolder) {
 						li = $("<li>", {id : dataSource.sourceId});
-						li.append($("<a>", {"class" : "usuggest-loading"}));
+						li.append($("<a>", {"class" : "msuggest-loading"}));
 						menu.append(li);
 					}
 	
@@ -346,7 +348,7 @@
 			
 			//if we found more items than are display, show a '...'
 			if (moreEntries) {
-				ul.append($("<li>", {"class" : "disabled usuggest-ellip",
+				ul.append($("<li>", {"class" : "disabled msuggest-ellip",
 			 		 				    html : "<span>...</span>"}));
 			}
 			
@@ -392,9 +394,7 @@
 			var ul = this.$menu;
 			
 			ul.width(Math.max(
-				// Firefox wraps long text (possibly a rounding bug)
-				// so we add 1px to avoid the wrapping (#7513)
-				ul.width("").outerWidth() + 1, this.$element.outerWidth()
+				ul.width("").outerWidth(), this.$element.outerWidth()
 			));
 		},
 		/* Overridden keyup functionality to support 'selected' input.  Pressing
@@ -402,7 +402,7 @@
 		keyup : function(e) {
 			//delete or backspace keystroke in 'selected' input 
 			// should clear out the field
-			if (this.$element.hasClass("usuggest-selected")) {
+			if (this.$element.hasClass("msuggest-selected")) {
 				switch(e.which) {
         			case 40: // down arrow
         			case 38: // up arrow
@@ -421,7 +421,7 @@
         			default:
         				this.$hiddenInput.val("");
         			    //otherwise start over with a new search based on the new key
-	        			this.$element.removeClass("usuggest-selected");
+	        			this.$element.removeClass("msuggest-selected");
 			    }
 				
 			} 
@@ -439,7 +439,7 @@
 				//create the link html
 				link = $(self.options.link);
 				li = $("<li>", {"class" : "disabled"});
-				span = $("<span>", {"class" : "usuggest-link"});
+				span = $("<span>", {"class" : "msuggest-link"});
 				span.append(link);
 				li.append(span);
 				
@@ -459,16 +459,16 @@
 	
 
 	/*
-	 * UserSuggest Plugin Definition
+	 * MultiSuggest Plugin Definition
 	 */
 	
-	var old = $.fn.usersuggest;
+	var old = $.fn.multisuggest;
 
-	$.fn.usersuggest = function(option) {
+	$.fn.multisuggest = function(option) {
 		return this.each(function() {
-			var $this = $(this), data = $this.data('usersuggest'), options = typeof option == 'object' && option
+			var $this = $(this), data = $this.data('multisuggest'), options = typeof option == 'object' && option
 			if (!data)
-				$this.data('usersuggest', ( data = new UserSuggest(this, options)))
+				$this.data('multisuggest', ( data = new MultiSuggest(this, options)))
 			if ( typeof option == 'string')
 				data[option]()
 		})
@@ -478,14 +478,14 @@
 	 * Static utilities
 	 */
 	
-	$.extend( $.fn.usersuggest, {
+	$.extend( $.fn.multisuggest, {
 		//esc
 		escapeRegex : function( value ) {
 			return value.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&");
 		},
 		//default filter function
 		filter : function(array, term) {
-			var matcher = new RegExp( $.fn.usersuggest.escapeRegex(term), "i" );
+			var matcher = new RegExp( $.fn.multisuggest.escapeRegex(term), "i" );
 			return $.grep( array, function(value) {
 				return matcher.test( value.label || value.value || value );
 			});
@@ -495,7 +495,7 @@
 			if (query === "") {
 				return item;
 			}
-		    var query = $.fn.usersuggest.escapeRegex(query);
+		    var query = $.fn.multisuggest.escapeRegex(query);
   	        return item.replace(new RegExp('(' + query + ')', 'ig'), 
 					  function ($1, match) {
 	        					return '<strong>' + match + '</strong>';
@@ -504,18 +504,18 @@
 	});
 
 
-	$.fn.usersuggest.defaults = {
+	$.fn.multisuggest.defaults = {
 		sources : [],
 		menu : '<ul class="typeahead dropdown-menu"></ul>',
 		item : '<li><a href="#"></a></li>',
-		loadingIconClass : '',
+		loadingIconClass : 'msuggest-loading',
 		noResultsText : 'No search results found.',
 		minLength : 1
 	}
 	
-	$.fn.usersuggest.defaults.dataSource = {
+	$.fn.multisuggest.defaults.dataSource = {
 		data : [],
-		filter : $.fn.usersuggest.filter,
+		filter : $.fn.multisuggest.filter,
 		listFormatter : function(item, query) { return item },
 		inputFormatter : function(item) { return item },
 		valueAttribute : function(item) { return item },
@@ -524,7 +524,7 @@
 		resultsProcessor : function(data) { return data }
 	}
 
-	$.fn.typeahead.Constructor = UserSuggest
+	$.fn.multisuggest.Constructor = MultiSuggest;
 	
 	
 

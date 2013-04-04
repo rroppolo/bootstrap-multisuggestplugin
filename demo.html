@@ -17,7 +17,7 @@
         }
     </style>
     <link href="http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet" />
-    <link href="css/usersuggest-plugin.css" rel="stylesheet" />
+    <link href="css/multisuggest-plugin.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -53,7 +53,7 @@
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
-<script src="js/usersuggest-plugin.js"></script>
+<script src="js/multisuggest-plugin.js"></script>
 
 <script type="text/javascript">
 
@@ -89,7 +89,7 @@ var americanCheese = [ { id: 1, name: 'American', description: 'Pasteurized proc
     europeanCheese = [ { id: 101, name: 'Gouda', description: 'Iconic Dutch yellow cheese.' }, { id: 102, name: 'Gjetost', description: 'Caramelized brown Scandinavian whey cheese.' }, { id: 103, name: 'Roquefort', description: 'Sheep milk blue cheese from the south of France.' }, { id: 104, name: 'Emmentaler', description: 'Yellow, medium-hard Swiss cheese with characteristic holes.' }, { id: 105, name: 'Gruyere', description: 'Sweet, slightly salty Swiss cheese, aged five months to one year.' }, { id: 106, name: 'Danish Blue', description: 'A strong, blue-veined cows-milk cheese.' } ];
 
 var arrayFilter = function(items, term) {
-    var matcher = new RegExp($.fn.usersuggest.escapeRegex(term), "i");
+    var matcher = new RegExp($.fn.multisuggest.escapeRegex(term), "i");
     return _.filter(items, function(item) {
         return (matcher.test(item.name) || matcher.test(item.description));
     });
@@ -99,7 +99,7 @@ var arrayListFormatter = function(item, term) {
     // A simple Underscore template for formatting each result
      var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
      return compiled({
-        hl : $.proxy($.fn.usersuggest.highlighter, this, term),
+        hl : $.proxy($.fn.multisuggest.highlighter, this, term),
         item: item
      });
 };
@@ -107,7 +107,7 @@ var arrayListFormatter = function(item, term) {
 var arrayInputFormatter = function(item) { return item.name; }
 var arrayValueAttribute = function(item) { return item.id; }
 
-$('input[name="cheeses"]').usersuggest({
+$('input[name="cheeses"]').multisuggest({
     sources: [
         {
             header: 'American',
@@ -132,7 +132,7 @@ $('input[name="cheeses"]').usersuggest({
     linkHandler: function() {
         alert('Display new cheese form.');
     },
-    loadingIconClass: 'usuggest-loading',
+    loadingIconClass: 'msuggest-loading',
     noResultsText: 'No matching cheeses.',
     enableDropdownMode: true,
     delay: 300,
@@ -147,7 +147,7 @@ $('input[name="cheeses"]').usersuggest({
         europeanCollection = new Backbone.Collection(europeanCheese);
 
     var collectionFilter = function(collection, term) {
-        var matcher = new RegExp($.fn.usersuggest.escapeRegex(term), "i");
+        var matcher = new RegExp($.fn.multisuggest.escapeRegex(term), "i");
         return collection.filter(function(item) {
             return (matcher.test(item.get('name')) || matcher.test(item.get('description')));
         });
@@ -157,7 +157,7 @@ $('input[name="cheeses"]').usersuggest({
         // A simple Underscore template for formatting each result
         var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
         return compiled({
-            hl : $.proxy($.fn.usersuggest.highlighter, this, term),
+            hl : $.proxy($.fn.multisuggest.highlighter, this, term),
             item: item.toJSON()
         });
     };
@@ -165,7 +165,7 @@ $('input[name="cheeses"]').usersuggest({
     var collectionInputFormatter = function(item) { return item.get('name'); }
     var collectionValueAttribute = function(item) { return item.get('id'); }
 
-    $('input[name="collectionCheeses"]').usersuggest({
+    $('input[name="collectionCheeses"]').multisuggest({
         sources: [
             {
                 header: 'American',
@@ -190,7 +190,7 @@ $('input[name="cheeses"]').usersuggest({
         linkHandler: function() {
             alert('Display new cheese form.');
         },
-        loadingIconClass: 'usuggest-loading',
+        loadingIconClass: 'msuggest-loading',
         noResultsText: 'No matching cheeses.',
         enableDropdownMode: true,
         delay: 300,
