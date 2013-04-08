@@ -39,6 +39,8 @@
                                               "class" : "msuggest-hiddeninput"});
             self.$element.after(self.$hiddenInput);
             
+            //display the default value, if provided
+            self.setValue(self.$element.val(), self.$element.attr('data-value'));
 
             self.$element.attr("autocomplete", "off");
             self.$menu.addClass("msuggest-menu");
@@ -75,14 +77,14 @@
             active  = this.$menu.find('.active');
             display = active.attr('data-display');
             val = active.attr('data-value');
-            if (val && val !== "") {
+            this.setValue(display, val);
+        },
+        setValue : function(display, value) {
+            if (display && display !== "" &&
+                value && value !== "") {
                 this.$element.addClass("msuggest-selected");
-              
-                //set the visible input to the display value, mark it 'selected'
                 this.$element.val(this.updater(display)).change().select();
-            
-                //set the hidden input to the real value
-                this.$hiddenInput.val(val);
+                this.$hiddenInput.val(value);
             }
             return this.hide();
         },
