@@ -253,8 +253,7 @@
                 if (renderSource) {
                     //create the header text
                     li = $("<li>", {"class" : "msuggest-header"});
-                    li.append($("<span>", {"class" : "muted",
-                                             "html" : dataSource.header}));
+                    li.append($("<span>", {"html" : dataSource.header}));
                     menu.append(li);
                 
                     //render the loading icon (if applicable)

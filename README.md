@@ -10,13 +10,19 @@ Extends the default [Bootstrap Typeahead](http://twitter.github.com/bootstrap/ja
 * separate __visible & hidden select values__
 * __minimum number of characters__ before a search is performed
 
-_Brought to you by the fine folks at [ACT.md](http://act.md)_
+_Brought to you by the friendly folks at [ACT.md](http://act.md)_
+
+Live Demo
+---------
+
+[View the live demo](http://htmlpreview.github.com/?https://github.com/rroppolo/bootstrap-multisuggestplugin/blob/master/demo.html)
+
 
 Installation
 ------------
 
-1. Include `bootstrap-multisuggest.js`
-1. Include `bootstrap-multisuggest.css`
+1. Include `multisuggest-plugin.js`
+1. Include `multisuggest-plugin.css`
 1. Enable the multi-suggest typeahead on any text input:
 
 ```javscript

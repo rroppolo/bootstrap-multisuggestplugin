@@ -25,8 +25,11 @@
     <div class="container">
         <div class="marketing">
             <h1>bootstrap-multisuggest</h1>
-
             <p class="muted">The multiple-datasource typeahead plugin for Twitter Bootstrap.</p>
+
+            <iframe style="margin-top: 10px" src="http://ghbtns.com/github-btn.html?user=rroppolo&repo=bootstrap-multisuggestplugin&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="85px" height="20px"></iframe>
+            <iframe style="margin-top: 10px" src="http://ghbtns.com/github-btn.html?user=rroppolo&repo=bootstrap-multisuggestplugin&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="85px" height="20px"></iframe>
+
         </div>
         <div class="row">
             <div class="span10">
@@ -42,6 +45,50 @@
                     <input type="text" name="collectionCheeses" placeholder="Find or select a cheese..." />
                 </div>
                 <pre class="pre-scrollable prettyprint linenums" data-source="#collections"></pre>
+
+                <h3>AJAX results</h3>
+                <p class="muted">Sorry, not a live example. But it works, trust us.</p>
+                <pre class="pre-scrollable prettyprint linenums">
+$('input[name=&quot;ofYourChoice&quot;]').multisuggest({
+    sources: [
+        {
+            data: &quot;/api/users&quot;,
+            queryParam: &quot;text&quot;,
+            type: &quot;url&quot;,
+            listFormatter: function(item, term) {
+                var compiled = _.template(&quot;&lt;% if (thumb) { print('&lt;img src=&quot;../' + thumb + '&quot;&gt;') } %&gt;&lt;% print(hl(name.first)) %&gt; &lt;% print(hl(name.last)) %&gt;&lt;% if (name.suffix) { print(', ' + name.suffix)} %&gt;&lt;br /&gt;&lt;small&gt;&lt;% print(hl(organization.name)) %&gt;&lt;/small&gt;&quot;);
+                return compiled({
+                    hl:           $.proxy($.fn.usersuggest.highlighter, this, term),
+                    organization: item.profile.organization,
+                    name:         item.profile.name,
+                    thumb:        item.profile.thumbnail
+                });
+            },
+            inputFormatter: function(item) {
+                var compiled = _.template(&quot;&lt;%= first %&gt; &lt;%= last %&gt;&quot;);
+                return compiled(item.profile.name);
+            },
+            valueAttribute: function(item) {
+                return item.profile.id;
+            },
+            resultsProcessor: function(data) {
+                return data.users;
+            },
+            header: &quot;Users&quot;,
+            maxEntries: 5
+        }
+    ],
+    link: '&lt;a tabFocus=&quot;0&quot; href=&quot;#&quot;&gt;Invite a new user&lt;/a&gt;',
+    linkHandler: function() {
+        // show invitation form
+    },
+    loadingIconClass: &quot;usuggest-loading&quot;,
+    noResultsText: &quot;No matching users.&quot;,
+    enableDropdownMode: true,
+    delay: 300,
+    minLength: 2
+});
+                </pre>
 
             </div>
         </div>
@@ -143,61 +190,107 @@ $('input[name="cheeses"]').multisuggest({
 
 <script id="collections">
 
-    var americanCollection = new Backbone.Collection(americanCheese),
-        europeanCollection = new Backbone.Collection(europeanCheese);
+var americanCollection = new Backbone.Collection(americanCheese),
+    europeanCollection = new Backbone.Collection(europeanCheese);
 
-    var collectionFilter = function(collection, term) {
-        var matcher = new RegExp($.fn.multisuggest.escapeRegex(term), "i");
-        return collection.filter(function(item) {
-            return (matcher.test(item.get('name')) || matcher.test(item.get('description')));
-        });
-    };
-
-    var collectionListFormatter = function(item, term) {
-        // A simple Underscore template for formatting each result
-        var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
-        return compiled({
-            hl : $.proxy($.fn.multisuggest.highlighter, this, term),
-            item: item.toJSON()
-        });
-    };
-
-    var collectionInputFormatter = function(item) { return item.get('name'); }
-    var collectionValueAttribute = function(item) { return item.get('id'); }
-
-    $('input[name="collectionCheeses"]').multisuggest({
-        sources: [
-            {
-                header: 'American',
-                type: 'backbone.collection',
-                data: americanCollection,
-                filter: collectionFilter,
-                listFormatter: collectionListFormatter,
-                inputFormatter: collectionInputFormatter,
-                valueAttribute: collectionValueAttribute
-            },
-            {
-                header: 'European',
-                type: 'backbone.collection',
-                data: europeanCollection,
-                filter: collectionFilter,
-                listFormatter: collectionListFormatter,
-                inputFormatter: collectionInputFormatter,
-                valueAttribute: collectionValueAttribute
-            }
-        ],
-        link: '<a tabFocus="0" href="javascript:void(0);">Add a new cheese...</a>',
-        linkHandler: function() {
-            alert('Display new cheese form.');
-        },
-        loadingIconClass: 'msuggest-loading',
-        noResultsText: 'No matching cheeses.',
-        enableDropdownMode: true,
-        delay: 300,
-        minLength: 2
+var collectionFilter = function(collection, term) {
+    var matcher = new RegExp($.fn.multisuggest.escapeRegex(term), "i");
+    return collection.filter(function(item) {
+        return (matcher.test(item.get('name')) || matcher.test(item.get('description')));
     });
+};
+
+var collectionListFormatter = function(item, term) {
+    // A simple Underscore template for formatting each result
+    var compiled = _.template("<% print(hl(item.name)) %><br /><small class=\"muted\"><% print(hl(item.description)) %></small>");
+    return compiled({
+        hl : $.proxy($.fn.multisuggest.highlighter, this, term),
+        item: item.toJSON()
+    });
+};
+
+var collectionInputFormatter = function(item) { return item.get('name'); }
+var collectionValueAttribute = function(item) { return item.get('id'); }
+
+$('input[name="collectionCheeses"]').multisuggest({
+    sources: [
+        {
+            header: 'American',
+            type: 'backbone.collection',
+            data: americanCollection,
+            filter: collectionFilter,
+            listFormatter: collectionListFormatter,
+            inputFormatter: collectionInputFormatter,
+            valueAttribute: collectionValueAttribute
+        },
+        {
+            header: 'European',
+            type: 'backbone.collection',
+            data: europeanCollection,
+            filter: collectionFilter,
+            listFormatter: collectionListFormatter,
+            inputFormatter: collectionInputFormatter,
+            valueAttribute: collectionValueAttribute
+        }
+    ],
+    link: '<a tabFocus="0" href="javascript:void(0);">Add a new cheese...</a>',
+    linkHandler: function() {
+        alert('Display new cheese form.');
+    },
+    loadingIconClass: 'msuggest-loading',
+    noResultsText: 'No matching cheeses.',
+    enableDropdownMode: true,
+    delay: 300,
+    minLength: 2
+});
 
 </script>
+
+<!--
+<script>
+
+$('input[name="ofYourChoice"]').multisuggest({
+    sources: [
+        {
+            data: "/api/users",
+            queryParam: "text",
+            type: "url",
+            listFormatter: function(item, term) {
+                var compiled = _.template("<% if (thumb) { print('<img src=\"../' + thumb + '\">') } %><% print(hl(name.first)) %> <% print(hl(name.last)) %><% if (name.suffix) { print(', ' + name.suffix)} %><br /><small><% print(hl(organization.name)) %></small>");
+                return compiled({
+                    hl:           $.proxy($.fn.usersuggest.highlighter, this, term),
+                    organization: item.profile.organization,
+                    name:         item.profile.name,
+                    thumb:        item.profile.thumbnail
+                });
+            },
+            inputFormatter: function(item) {
+                var compiled = _.template("<%= first %> <%= last %>");
+                return compiled(item.profile.name);
+            },
+            valueAttribute: function(item) {
+                return item.profile.id;
+            },
+            resultsProcessor: function(data) {
+                return data.users;
+            },
+            header: "Users",
+            maxEntries: 5
+        }
+    ],
+    link: '<a tabFocus="0" href="#">Invite a new user</a>',
+    linkHandler: function() {
+        // show invitation form
+    },
+    loadingIconClass: "usuggest-loading",
+    noResultsText: "No matching users.",
+    enableDropdownMode: true,
+    delay: 300,
+    minLength: 2
+});
+
+</script>
+-->
 
 </body>
 </html>
