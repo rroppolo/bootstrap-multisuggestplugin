@@ -55,6 +55,17 @@ The plugin accepts options as single object argument. Supported options are:
 
 See the [live demo](http://htmlpreview.github.com/?https://github.com/rroppolo/bootstrap-multisuggestplugin/blob/master/demo.html) for fully qualified examples.
 
+Default Value
+--------------
+
+The plugin accepts a default value from the text input through the value and data-value attributes.  
+* __value__: the display value, displayed as the selected item in the input field
+* __data-value__: the real value to be submitted
+
+```html
+<input id="multiSuggestTest" value="John Smith" data-value="36c86e9d72c14d2aa582d2fb95e66c1c" />
+```
+
 Contributing
 ------------
 
