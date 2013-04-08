@@ -123,6 +123,7 @@
                 //Backbone Collection type
                 if ("backbone.collection" === dataSource.type) {
                     dataSource.results = dataSource.filter(dataSource.data.models, self.query);
+                    self._normalize(dataSource);
                 } 
                 //URL type
                 else if ("url" === dataSource.type) {
@@ -160,12 +161,13 @@
                  //Array type
                 else if ("array" === dataSource.type) {
                     dataSource.results = dataSource.filter(dataSource.data, self.query);
+                    self._normalize(dataSource);
                 }
 
             });
             
             //process and display data source results
-            return self.process(false);
+            return self.render(false).show();
 
         },
         /* Dropdown mode: opens the widget as a dropdown to display synchronous dataSources only */
@@ -194,19 +196,6 @@
             //render with dropdownMode to true (don't show remote data)
             return self.render(true).show();
 
-        },
-        /* Entry point for processing of search results */
-        process : function() {
-            var self = this;
-            
-            $.each(self.sources, function(ind, dataSource) {
-                if (dataSource.results) {            
-                    self._normalize(dataSource);
-                }
-            });
-            
-            //render with dropdownMode to false (do show remote data)
-            return self.render(false).show();
         },
         /* Format the result data into label, value, and displayValue */
         _normalize : function(dataSource) {
@@ -306,6 +295,7 @@
             
             self._renderMenu(tempul, dataSource);
             li.replaceWith(tempul.children());
+            self._resizeMenu();
 
         },
         /* Helper method to render the menu section for a particular data source's results set */
@@ -336,7 +326,7 @@
                 ul.append(items);                
             }
             
-            //if we found more items than are display, show a '...'
+            //if we found more items than are displayed, show a '...'
             if (moreEntries) {
                 ul.append($("<li>", {"class" : "disabled msuggest-ellip",
                                       html : "<span>...</span>"}));
@@ -382,16 +372,12 @@
         /* Match menu width to input element */
         _resizeMenu : function() {
             var ul = this.$menu;
-            
-            ul.width(Math.max(
-                ul.width("").outerWidth(), this.$element.outerWidth()
-            ));
+            ul.css("min-width", this.$element.outerWidth());
         },
         /* Overridden keyup functionality to support 'selected' input.  Pressing
          * any (not navigation-related) key will clear out the selection */
         keyup : function(e) {
-            //delete or backspace keystroke in 'selected' input 
-            // should clear out the field
+
             if (this.$element.hasClass("msuggest-selected")) {
                 switch(e.which) {
                     case 40: // down arrow
@@ -401,20 +387,21 @@
                     case 16: // shift
                     case 17: // ctrl
                     case 18: // alt
-                       case 9: // tab
-                       case 13: // enter
-                           //ignore these keys for a selected input, force selection 
-                           this.$element.select();    
-                        e.stopPropagation();
-                          e.preventDefault();
-                          return;
+                    case 9: // tab
+                    case 13: //enter
+                       //ignore these keys for a selected input, force selection 
+                       this.$element.select();    
+                       e.stopPropagation();
+                       e.preventDefault();
+                       return;                    
                     default:
                         this.$hiddenInput.val("");
                         //otherwise start over with a new search based on the new key
                         this.$element.removeClass("msuggest-selected");
                 }
                 
-            } 
+            }
+             
             //defer to the super for everything else
             _superproto.keyup.call(this, e);
         },
@@ -493,7 +480,7 @@
                       function ($1, match) {
                                 return '<strong>' + match + '</strong>';
                        });
-                }
+          }
     });
 
 
