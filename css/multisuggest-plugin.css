@@ -46,6 +46,16 @@ input.msuggest-hiddeninput {
 .input-prepend .msuggest-header.active {
     background-color: #FFFFFF;
     border-color: inherit;
+    background: none;
+}
+
+.dropdown-menu > li.disabled > a:hover,
+.dropdown-menu > li.disabled > a:focus,
+.dropdown-menu > .disabled.active > a,
+.dropdown-menu > .disabled.active > a:hover,
+.dropdown-menu > .disabled.active > a:focus {
+    background-color: #ffffff;
+    background: none;
 }
 
 .msuggest-menu img {
