@@ -16,10 +16,6 @@ input.msuggest-selected {
     text-decoration: underline;
 }
 
-input.msuggest-hiddeninput {
-    visibility: hidden;
-}
-
 .msuggest-header,
 .msuggest-link a,
 .msuggest-ellip span {

@@ -35,8 +35,9 @@
             //create hidden input to store value
             nameAttr = self.$element.attr("name");
             self.$element.attr("name", nameAttr + "_msuggest");
-            self.$hiddenInput = $("<input>", {name : nameAttr,
-                                              "class" : "msuggest-hiddeninput"});
+            self.$hiddenInput = $("<input>", {  name : nameAttr,
+                                                type: 'hidden',
+                                                "class" : "msuggest-hiddeninput"});
             self.$element.after(self.$hiddenInput);
             
             //display the default value, if provided
@@ -84,7 +85,7 @@
                 value && value !== "") {
                 this.$element.addClass("msuggest-selected");
                 this.$element.val(this.updater(display)).change().select();
-                this.$hiddenInput.val(value);
+                this.$hiddenInput.val(value).change();
             }
             return this.hide();
         },
