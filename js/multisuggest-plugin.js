@@ -47,21 +47,20 @@
             self.$menu.addClass("msuggest-menu");
             
             //focus/click listener to always select text when input has a value
-            self.$element.on("focus click mousedown", function(evt) {
+            self.$element.on("mousedown", function(evt) {
                 if (self.$element.hasClass("msuggest-selected")) {
-                    evt.stopPropagation();
-                    evt.preventDefault();    
                     //select the existing item on click/key focus
+                    evt.stopPropagation();
+                    evt.preventDefault();
                     self.$element.select();                
+                }
+                if (self.options.enableDropdownMode) {
+                    //register click listener to expand dropdown
+                    self.open.call(self);
                 }
             });
             
-            if (self.options.enableDropdownMode) {        
-                //register click listener to expand dropdown
-                self.$element.on("click", function(evt) {
-                    self.open.call(self);
-                });
-                
+            if (self.options.enableDropdownMode) {
                 self.$element.addClass("msuggest-input-dropdown");
             }
             
@@ -83,9 +82,9 @@
         setValue : function(display, value) {
             if (display && display !== "" &&
                 value && value !== "") {
+                this.$element.val(this.updater(display)).change();
+                this.$hiddenInput.val(value);
                 this.$element.addClass("msuggest-selected");
-                this.$element.val(this.updater(display)).change().select();
-                this.$hiddenInput.val(value).change();
             }
             return this.hide();
         },
@@ -371,6 +370,15 @@
 
             prev.addClass('active');
         },
+        blur : function(e) {
+            this.focused = false;
+            if (!this.mousedover && this.shown) {
+                this.hide();
+            }
+            if (!this.$element.hasClass("msuggest-selected")) {
+                this.$element.val("");
+            }
+        },
         /* Match menu width to input element */
         _resizeMenu : function() {
             var ul = this.$menu;
@@ -378,34 +386,45 @@
         },
         /* Overridden keyup functionality to support 'selected' input.  Pressing
          * any (not navigation-related) key will clear out the selection */
-        keyup : function(e) {
+        keydown : function(e) {
 
             if (this.$element.hasClass("msuggest-selected")) {
                 switch(e.which) {
-                    case 40: // down arrow
-                    case 38: // up arrow
-                    case 39: // right arrow
-                    case 37: // left arrow
+                    case 9: // tab
+                    case 13: //enter
                     case 16: // shift
                     case 17: // ctrl
                     case 18: // alt
-                    case 9: // tab
-                    case 13: //enter
-                       //ignore these keys for a selected input, force selection 
-                       this.$element.select();    
-                       e.stopPropagation();
-                       e.preventDefault();
-                       return;                    
+                    case 20: //caps
+                    case 27: // escape
+                    case 37: // left arrow
+                    case 38: // up arrow
+                    case 39: // right arrow
+                    case 40: // down arrow
+                    case 91: //command
+                       //ignore these keys for a selected input, force selection
+                       break;
                     default:
+                        this.$element.select();
+                        this.$element.removeClass("msuggest-selected");
                         this.$hiddenInput.val("");
                         //otherwise start over with a new search based on the new key
-                        this.$element.removeClass("msuggest-selected");
                 }
                 
             }
-             
-            //defer to the super for everything else
-            _superproto.keyup.call(this, e);
+            _superproto.keydown.call(this, e);
+        },
+         keyup: function (e) {
+            switch(e.keyCode) {
+                case 37: // left arrow
+                case 39: // right arrow
+                case 91: //command
+                    e.stopPropagation();
+                    e.preventDefault();
+                    break;
+                default:
+                    _superproto.keyup.call(this, e);
+            }
         },
         /* Appends the link text to the bottom of the menu, if specified */
         _buildLink : function() {
