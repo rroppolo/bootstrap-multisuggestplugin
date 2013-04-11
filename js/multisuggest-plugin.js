@@ -41,7 +41,7 @@
             self.$element.after(self.$hiddenInput);
             
             //display the default value, if provided
-            self.setValue(self.$element.val(), self.$element.attr('data-value'));
+            self.setValue(self.$element.val(), self.$element.data('value'));
 
             self.$element.attr("autocomplete", "off");
             self.$menu.addClass("msuggest-menu");
